@@ -9,9 +9,9 @@ import io
 from flask_cors import CORS
 
 
-def process_bom_analysis(request):
+def process_bom_adjacency(request):
     try:
-        bom_file = request.files['bom_file']
+        bom_file = request.files['bom_graph.csv']
         central_bom_id = request.form['central_bom_id']
         max_distance = int(request.form['max_distance'])
 
@@ -49,7 +49,7 @@ def process_bom_analysis(request):
     except ValueError as e:
         return jsonify({'error': f"Invalid value: {str(e)}"}), 400
     except Exception as e:
-        print(f"Error in process_bom_analysis: {str(e)}")
+        print(f"Error in process_bom_adjacency: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 def find_precursors_and_successors(G, central_node, max_distance):

@@ -3,35 +3,46 @@ import axios from 'axios';
 import { FaFileExcel, FaTimes } from 'react-icons/fa';
 
 function App() {
-  const [selectedMethod, setSelectedMethod] = useState('bom_analysis');
+  const [selectedMethod, setSelectedMethod] = useState('bom_adjacency');
   const [files, setFiles] = useState({});
   const [centralBomId, setCentralBomId] = useState('');
   const [maxDistance, setMaxDistance] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const fileInputRefs = useRef({});
 
   const methods = [
     {
-      id: 'bom_analysis',
-      name: 'BOM Adjacency',
-      fileInputs: ['bom_file'],
+      id: 'bom_adjacency',
+      name: 'BOM Adjacency Finder',
+      fileInputs: ['bom_graph.csv'],
       description: [
-        "Input: bom_graph file in CSV format, Central BOM ID, and Max Distance",
-        "Process: Identifies all precursor and successor BOMs within the specified distance to the central BOM ID",
-        "Output: A CSV with all BOM IDs satisfying this relationship"
+        "Input: bom_graph.csv, generated from BOM Graph Generator Method",
+        "Process: Identifies all precursor and successor BOMs within the specified distance to the input BOM ID",
+        "Output: A CSV file with all BOM IDs categorized in either precurosor or successor that satisfy the constraints given"
       ]
     },
     {
       id: 'bom_graph',
       name: 'BOM Graph Generator',
-      fileInputs: ['bom_details_list', 'bom_parents_list'],
+      fileInputs: ['bom_details_list.xlsx', 'bom_parents_list.xlsx'],
       description: [
-        "Input: Two Excel files - Agility BOM Details List and Agility BOM Parents List",
-        "Process: Combines and processes the information from both files to form a relationship based BOM graph",
-        "Output: A CSV file with with BOM relationships that can be used to generate a graph in graphia"
+        "Input: bom_details_list.xlsx (Agility sourced excel file) and bom_parents_list.xlsx (Agility sourced excel file)",
+        "Process: Combines and processes the information from both files to form a relationship based on graph structure for BOMs",
+        "Output: A CSV file with with BOM relationships that can be used to generate a BOM relationship graph in Graphia.exe"
       ]
     },
+    {
+      id: 'bom_merge',
+      name: 'Big Bom Attributes Merger',
+      fileInputs: ['big_bom.csv', 'attributes_table.xlsx'],
+      description: [
+        "Input: big_bom.csv (A CSV File that identifies major BOMs and their attributes), attributes_table.xlsx, (Derived from complex python scripts in Jupyter) ",
+        "Process: Merge and append valuable columns and attributes from big_bom.csv to the corresponding rows in attributes_table.xlsx",
+        "Output: An excel (xlsx) file combined from two inputs"
+      ]
+    }
   ];
 
 
@@ -70,7 +81,7 @@ function App() {
       }
     });
 
-    if (selectedMethod === 'bom_analysis') {
+    if (selectedMethod === 'bom_adjacency') {
       formData.append('central_bom_id', centralBomId);
       formData.append('max_distance', maxDistance);
     }
@@ -105,9 +116,61 @@ function App() {
       link.remove();  // Clean up after click
     } catch (error) {
       console.error('Download failed', error);
+      if (error.response) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const errorMessage = JSON.parse(reader.result).error;
+          setError(errorMessage);
+          setShowErrorModal(true);
+        };
+        reader.readAsText(error.response.data);
+      } else if (error.request) {
+        setError('No response was received from server');
+        setShowErrorModal(true);
+      }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resetAppState = () => {
+    setSelectedMethod('bom_adjacency');
+    setFiles({});
+    setCentralBomId('');
+    setError(null);
+    setShowErrorModal(false);
+    // Reset file input values
+    Object.values(fileInputRefs.current).forEach(ref => {
+      if (ref) ref.value = '';
+    });
+  };
+
+  const ErrorModal = ({ show, onClose, errorMessage }) => {
+    if (!show) return null;
+
+    return (
+      <div className = "fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="my-modal">
+        <div className = "relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+          <div className = "mt-3 text-center">
+            <h3 className = "text-lg leading-6 font-medium text-gray-900">Error</h3>
+            <div className = "mt-2 px-7 py-3">
+              <p className = "text-sm text-gray-500">
+                {errorMessage}
+              </p>
+            </div>
+            <div className = "items-center px-4 py-3">
+              <button
+                id="ok-btn"
+                className = "px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-blue-300"
+                onClick={onClose}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -136,7 +199,7 @@ function App() {
               ))}
             </ul>
           </div>
-          {selectedMethod === 'bom_analysis' && (
+          {selectedMethod === 'bom_adjacency' && (
             <>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Central BOM ID</label>
@@ -214,6 +277,11 @@ function App() {
           </button>
         </form>
       </div>
+      <ErrorModal
+        show={showErrorModal}
+        onClose={resetAppState}
+        errorMessage={error}
+      />
     </div>
   );
 }
