@@ -20,7 +20,7 @@ function App() {
       description: [
         "Input: bom_graph.csv, generated from BOM Graph Generator Method",
         "Process: Identifies all precursor and successor BOMs within the specified distance to the input BOM ID",
-        "Output: A CSV file with all BOM IDs categorized in either precurosor or successor that satisfy the constraints given"
+        "Output: An excel file with all BOM IDs categorized in either precurosor or successor that satisfy the constraints given"
       ]
     },
     {
@@ -41,6 +41,16 @@ function App() {
         "Input: big_bom.csv (A CSV File that identifies major BOMs and their attributes), attributes_table.xlsx, (Derived from complex python scripts in Jupyter) ",
         "Process: Merge and append valuable columns and attributes from big_bom.csv to the corresponding rows in attributes_table.xlsx",
         "Output: An excel (xlsx) file combined from two inputs"
+      ]
+    },
+    {
+      id: 'filter_on_adjacency',
+      name: 'Attributes Filter on Adjacency',
+      fileInputs: ['bom_adjacency.xlsx', 'attributes_table.xlsx'],
+      description: [
+        "Input: ",
+        "Process: ",
+        "Output: "
       ]
     }
   ];

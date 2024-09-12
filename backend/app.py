@@ -1,11 +1,11 @@
 from flask import Flask, request, send_file, jsonify, send_from_directory
-import traceback
 from flask_cors import CORS
 import os
 import sys
 from methods.bom_graph import bom_graph
 from methods.bom_adjacency import process_bom_adjacency
 from methods.merge_big_bom_attributes import merge_big_bom_and_attributes
+from methods.filter_attributes_on_adjacent import filter_attributes
 
 if getattr(sys, 'frozen', False):
     application_path = sys._MEIPASS
@@ -71,12 +71,34 @@ def process_files():
                 )
 
                 @return_value.call_on_close
-                def remove_file():
+                def remove_temp():
                     os.remove(tmp_path)
 
                 return return_value
             except Exception as e:
                 print(f"Error in bom_merge: {str(e)}")
+                return jsonify({"error": str(e)}), 500
+        elif method == 'filter_on_adjacency':
+            print("Attempting to filter...")
+            bom_adjacency = request.files["bom_adjacency.xlsx"]
+            attributes_table = request.files["attributes_table.xlsx"]
+            try: 
+                tmp_path = filter_attributes({'bom_adjacency': bom_adjacency, 'attributes_table':attributes_table})
+                print("Outpuyt generated successfully, attempting to send file...")
+                return_value = send_file(
+                    tmp_path,
+                    mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    as_attachment=True,
+                    download_name='attributes_filtered_on_adjacency.xlsx'
+                )
+
+                @return_value.call_on_close
+                def remove_temp():
+                    os.remove(tmp_path)
+
+                return return_value
+            except Exception as e:
+                print(f"Error in attributes filter: {str(e)}")
                 return jsonify({"error": str(e)}), 500
         else:
             print(f"Invalid method: {method}")
