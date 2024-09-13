@@ -37,12 +37,16 @@ def process_bom_adjacency(request):
 
         filename = f"BOM_{central_bom_id}_{max_distance}_edges.xlsx"
 
-        return send_file(
+        response = send_file(
             output,
             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             as_attachment=True,
             download_name=filename
         )
+
+        response.headers['Content-Disposition'] = 'attachment; filename=' + filename
+
+        return response
 
     except KeyError as e:
         return jsonify({'error': f"Missing required field: {str(e)}"}), 400

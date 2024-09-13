@@ -99,31 +99,40 @@ function App() {
     try {
       const response = await axios.post('http://localhost:5000/process', formData, {
         responseType: 'blob',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
-      // Get the filename from the Content-Disposition header if Flask sends it
-      const contentDisposition = response.headers['content-disposition'];
-      let filename = '';
-
-      // Extract the filename from the Content-Disposition header
-      if (contentDisposition && contentDisposition.includes('filename=')) {
-        filename = contentDisposition
-          .split('filename=')[1]
-          .split(';')[0]
-          .replace(/['"]/g, '');  // Remove any quotes around the filename
-      }
-
-      // Create a download link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
 
-      // Use the filename from the response, or fall back to a default if missing
-      link.setAttribute('download', filename || 'result_file.csv');
+      // Extract filename from Content-Disposition header
+      const contentDisposition = response.headers['content-disposition'];
+      let filename = 'result_file.xlsx'; // default filename
 
+      console.log('Response headers:', response.headers);
+      console.log('Content-Disposition:', response.headers['content-disposition']);
+
+      if (contentDisposition) {
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(contentDisposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1].replace(/['"]/g, '');
+        }
+      }
+
+      console.log('Extracted filename:', filename);
+
+      link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
-      link.remove();  // Clean up after click
+      link.remove();
+
+      // Clean up the URL object
+      window.URL.revokeObjectURL(url);
+
     } catch (error) {
       console.error('Download failed', error);
       if (error.response) {

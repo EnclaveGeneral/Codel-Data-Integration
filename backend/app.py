@@ -14,7 +14,14 @@ else:
 
 static_folder = os.path.join(application_path, 'static')
 app = Flask(__name__, static_folder=static_folder, static_url_path='')
-CORS(app)
+
+CORS(app, resources={r"/*": {
+    "origins": "*",
+    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"],
+    "expose_headers": ["Content-Disposition"]
+}})
+
 
 print(f"Static folder path: {app.static_folder}")
 print(f"Does static folder exist: {os.path.exists(app.static_folder)}")
@@ -37,9 +44,9 @@ def process_files():
 
         if method == 'bom_adjacency':
             print("Executing bom_adjacency")
-            result = process_bom_adjacency(request)
-            print(f"bom_adjacency result: {result}")
-            return result
+            response = process_bom_adjacency(request)
+            print(f"bom_adjacency result: {response}")
+            return response
         elif method == 'bom_graph':
             print("Executing bom_graph")
             bom_details_list = request.files['bom_details_list.xlsx']
@@ -82,7 +89,7 @@ def process_files():
             print("Attempting to filter...")
             bom_adjacency = request.files["bom_adjacency.xlsx"]
             attributes_table = request.files["attributes_table.xlsx"]
-            try: 
+            try:
                 tmp_path = filter_attributes({'bom_adjacency': bom_adjacency, 'attributes_table':attributes_table})
                 print("Outpuyt generated successfully, attempting to send file...")
                 return_value = send_file(

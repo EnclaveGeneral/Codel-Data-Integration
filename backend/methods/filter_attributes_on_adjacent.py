@@ -1,6 +1,6 @@
 import pandas as pd
 from flask import jsonify
-import tempfile 
+import tempfile
 
 def filter_attributes(files):
     try:
@@ -17,11 +17,11 @@ def filter_attributes(files):
             if pd.isna(cell):
                 return False
             cell_str = str(cell)
-            
+
             # Check if the cell is a simple string match
             if cell_str in filter_values:
                 return True
-            
+
             # Split the cell by '__' and check each part
             parts = cell_str.split('__')
             return any(part in filter_values for part in parts)
@@ -41,8 +41,8 @@ def filter_attributes(files):
 
         print("Preparing result for output...")
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx') as tmp: 
-            filtered_adjacency_df.to_Excel(tmp.name, index=False, engine='openpyxl')
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx') as tmp:
+            filtered_adjacency_df.to_excel(tmp.name, index=False, engine='openpyxl')
             tmp_path = tmp.name
 
         return tmp_path
