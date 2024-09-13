@@ -20,7 +20,7 @@ function App() {
       description: [
         "Input: bom_graph.csv, generated from BOM Graph Generator Method",
         "Process: Identifies all precursor and successor BOMs within the specified distance to the input BOM ID",
-        "Output: An excel file with all BOM IDs categorized in either precurosor or successor that satisfy the constraints given"
+        "Output: BOM__(central_bom_id)__(number_of_edges).xlsx (excel)"
       ]
     },
     {
@@ -30,7 +30,7 @@ function App() {
       description: [
         "Input: bom_details_list.xlsx (Agility sourced excel file) and bom_parents_list.xlsx (Agility sourced excel file)",
         "Process: Combines and processes the information from both files to form a relationship based on graph structure for BOMs",
-        "Output: A CSV file with with BOM relationships that can be used to generate a BOM relationship graph in Graphia.exe"
+        "Output: bom_graph.csv (CSV) file"
       ]
     },
     {
@@ -40,7 +40,7 @@ function App() {
       description: [
         "Input: big_bom.csv (A CSV File that identifies major BOMs and their attributes), attributes_table.xlsx, (Derived from complex python scripts in Jupyter) ",
         "Process: Merge and append valuable columns and attributes from big_bom.csv to the corresponding rows in attributes_table.xlsx",
-        "Output: An excel (xlsx) file combined from two inputs"
+        "Output: merged_big_bom_attributes.xlsx (excel) file"
       ]
     },
     {
@@ -48,9 +48,9 @@ function App() {
       name: 'Attributes Filter on Adjacency',
       fileInputs: ['bom_adjacency.xlsx', 'attributes_table.xlsx'],
       description: [
-        "Input: ",
-        "Process: ",
-        "Output: "
+        "Input: A resulting bom_adjacency.xlsx (excel) file, and an attributes_table.xlsx (excel) file",
+        "Process: Filter out all BOM ID within attributes_table that are not on and/or present on bom_adjacency.xlsx file",
+        "Output: attributes_filtered_on_adjacency.xlsx (excel) file"
       ]
     }
   ];
