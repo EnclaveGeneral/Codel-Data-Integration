@@ -133,6 +133,9 @@ def get_method_info():
         },
         'merge_big_bom_attributes': {
             'files': [{'name': 'big_bom', 'type': 'csv'}, {'name': 'attributes_table', 'type': 'xlsx'}],
+        },
+        'attributes_filter_on_adjacency': {
+            'files': [{'name': 'bom_adjacency', 'type': 'xlsx'}, {'name': 'attributes_table', 'type': 'xlsx'}]
         }
     }
     return jsonify(method_info)
