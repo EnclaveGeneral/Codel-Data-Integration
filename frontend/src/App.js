@@ -97,7 +97,7 @@ function App() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/process', formData, {
+      const response = await axios.post('/api/process', formData, {
         responseType: 'blob',
         headers: {
           'Content-Type': 'multipart/form-data'
