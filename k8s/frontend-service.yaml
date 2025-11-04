@@ -7,9 +7,8 @@ spec:
   selector: 
     app: bom-frontend
   ports: 
-  - Protocol: TCP 
+  - protocol: TCP 
     port: 80 
     targetPort: 80
   type: LoadBalancer 
 
-  

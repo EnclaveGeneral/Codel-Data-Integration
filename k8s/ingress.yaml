@@ -1,19 +1,19 @@
 apiVersion: networking.k8s.io/v1 
 kind: Ingress 
-memtadata: 
-  name: bom-processor-ingress 
+metadata: 
+  name: bom-processor-ingress
   namespace: bom-processor
   annotations: 
     nginx.ingress.kubernetes.io/rewrite-target: /
-spec: 
-  rules: 
-  - host: bom-processor.local 
-    http: 
-      paths: 
-      - path: /
-        pathType: Prefix 
-        backend: 
-          service: 
-            name: bom-frontend-service
-            port: 
-              number: 80
+  spec: 
+    rules: 
+    - host: bom-processor.local 
+      http: 
+        paths: 
+        - path: /
+          pathType: Prefix 
+          backend: 
+            service: 
+              name: bom-backend-service
+              port: 
+                number: 80

@@ -10,43 +10,31 @@ spec:
   selector: 
     matchLabels: 
       app: bom-backend
-    template: 
-      metadat: 
-        labels: 
-          app: bom-backend 
-      spec: 
-        containers: 
-        - name: backend 
-          image: bom-backend:v1
-          imagePullPolicy: Never # Use local image only 
-          ports: 
-          - containerPort: 5000
-            name: http 
-          env: 
-          - name: FLASK_ENV
-            value: "production"
-          resources: 
-            requests: 
-              memory: "512Mi"
-              cpu: "500m"
-            limits: 
-              memory: "2Gi"
-              cpu: "2000m"
-            livenessProbe: 
-              httpGet:
-                path: /
-                port: 5000
-              initialDelaySeconds: 10
-              periodSeconds: 5
-            readinessProbe: 
-              httpGeet: 
-                path: /
-                port: 500 
-              initialDelaySeconds: 10
-              periodSeconds: 5
-            volumeMounts: 
-            - name: temp-storage 
-              mountPath: /app/temp 
-          volumes: 
+  template: 
+    metadat: 
+      labels: 
+        app: bom-backend
+    spec: 
+      containers: 
+      - name: backend 
+        image: bom-backend:v1
+        imagePullPolicy: Never # Use local image only 
+        ports: 
+        - containerPort: 5000
+          name: http 
+        env: 
+        - name: FLASK_ENV
+          value: "production"
+        resources: 
+          requests: 
+            memory: "512Mi"
+            cpu: "500m"
+          limits: 
+            memory: "2Gi"
+            cpu: "2000m"
+          volumeMounts: 
           - name: temp-storage 
-            emptyDir: {}
+            mountPath: /app/temp 
+        volumes: 
+        - name: temp-storage 
+          emptyDir: {}

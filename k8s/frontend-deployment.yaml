@@ -10,22 +10,22 @@ spec:
   selector: 
     matchLabels: 
       app: bom-frontend
-    template: 
-      metadata: 
-        labels: 
-          app: bom-frontend
-      spec: 
-        containers: 
-        - name: frontend 
-          image: bom-frontend:v1
-          imagePullPolicy: Never # Use local image 
-          ports: 
-          - containerPort: 80
-            name: http 
-          resources: 
-            requests: 
-              memory: "128Mi"
-              cpu: "100m"
-            limits: 
-              memory: "256Mi"
-              cpu: "200m"
+  template: 
+    metadata: 
+      labels: 
+        app: bom-frontend
+    spec: 
+      containers: 
+      - name: frontend 
+        image: bom-frontend:v1
+        imagePullPolicy: Never # Use local image 
+        ports: 
+        - containerPort: 80
+          name: http 
+        resources: 
+          requests: 
+            memory: "128Mi"
+            cpu: "100m"
+          limits: 
+            memory: "256Mi"
+            cpu: "200m"
