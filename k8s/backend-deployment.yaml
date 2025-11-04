@@ -11,7 +11,7 @@ spec:
     matchLabels: 
       app: bom-backend
   template: 
-    metadat: 
+    metadata: 
       labels: 
         app: bom-backend
     spec: 
@@ -32,9 +32,9 @@ spec:
           limits: 
             memory: "2Gi"
             cpu: "2000m"
-          volumeMounts: 
-          - name: temp-storage 
-            mountPath: /app/temp 
-        volumes: 
+        volumeMounts: 
         - name: temp-storage 
-          emptyDir: {}
+          mountPath: /app/temp 
+      volumes: 
+      - name: temp-storage 
+        emptyDir: {}
